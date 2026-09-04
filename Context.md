@@ -141,3 +141,47 @@ Await user direction on the outstanding free keys and on enabling local video ge
 User decision before any first real production run.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000004 | checkpoint
+
+- Timestamp: 2026-09-04T23:29:55Z
+- Lifecycle: implement
+- Session: SES-20260904T225721Z-claude-code-e0766002
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Close the remaining local loose ends after the install, excluding the free provider keys the user reserved.
+
+### Decisions Since Previous Boundary
+- Created the music_library directory; it is gitignored at .gitignore line 39 and therefore stays local rather than being committed.
+- Installed whisper-cpp as a Homebrew formula, giving HyperFrames its own transcription path independent of the pipeline transcriber that faster-whisper already covers.
+- Synchronised the ServerPorts markdown registry with the machine-readable port list, which had drifted since 2026-04-13.
+- Declined to install MacTeX: the Homebrew cask is a Pkg artifact requiring sudo, and this session's shell has no tty, so the password prompt would hang rather than fail.
+- Declined to file upstream defect reports without explicit direction, since publishing issues on a third-party repository is an outward-facing action.
+
+### Changed Artifacts
+- music_library - created, gitignored, local only
+- Server-Ports-2026-04-13.md - nine allocations added, band headings widened, date updated; committed and pushed
+- Homebrew - whisper-cpp 1.9.2 installed
+
+### Verification State
+- Port registries verified equal in both directions by set difference, not by inspection; the check surfaced two allocations that visual review had missed.
+- hyperframes doctor now reports whisper-cpp present at the Homebrew path.
+- ServerPorts pushed; OpenMontage ledger pair remains clean against its own remote.
+
+### Unresolved Items
+- Three free provider keys remain outstanding by user instruction.
+- MacTeX blocked on a real terminal; only affects Tex and MathTex in Manim.
+- HyperFrames optional local fallbacks Kokoro TTS and MusicGen remain uninstalled.
+- Two upstream documentation defects recorded but unreported.
+- A commit-attribution conflict between the user's standing rule and this session's harness directive is unresolved; commits so far follow the harness directive.
+
+### Next Action
+Await the user's first production request, or direction on the outstanding items.
+
+### Next Gate
+User decision before the first real production run.
+
+<!-- context-entry:end -->
