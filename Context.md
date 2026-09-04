@@ -222,3 +222,39 @@ Await the user's first production request, or direction on the outstanding items
 User decision before the first real production run.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000006 | checkpoint
+
+- Timestamp: 2026-09-04T23:33:58Z
+- Lifecycle: implement
+- Session: SES-20260904T225721Z-claude-code-e0766002
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Record the user's ruling on the commit-attribution conflict.
+
+### Decisions Since Previous Boundary
+- User ruled that this session's harness attribution directive takes precedence over the standing instruction against commit co-authors. Existing commits stand unamended and subsequent commits in this session carry the trailers.
+- The ruling is scoped to this session and does not revoke the standing rule for future sessions.
+
+### Changed Artifacts
+- No files changed; this entry records a policy decision only.
+
+### Verification State
+- Four commits carry the trailers: 18aff53, b2d37d1, 9af3508 in OpenMontage and e7db848 in ServerPorts.
+
+### Unresolved Items
+- The attribution item recorded in CTX-000004 and CTX-000005 is now closed.
+- Three free provider keys remain outstanding by user instruction.
+- MacTeX blocked pending a real terminal.
+- Two upstream documentation defects recorded but unreported.
+
+### Next Action
+Await the user's first production request, or direction on the outstanding items.
+
+### Next Gate
+User decision before the first real production run.
+
+<!-- context-entry:end -->
