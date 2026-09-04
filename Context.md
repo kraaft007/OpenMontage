@@ -185,3 +185,40 @@ Await the user's first production request, or direction on the outstanding items
 User decision before the first real production run.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000005 | checkpoint
+
+- Timestamp: 2026-09-04T23:30:42Z
+- Lifecycle: implement
+- Session: SES-20260904T225721Z-claude-code-e0766002
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Resolve the two HyperFrames local fallbacks that CTX-000004 recorded as outstanding.
+
+### Decisions Since Previous Boundary
+- Installed kokoro-onnx and soundfile into the project virtual environment. MusicGen needed only soundfile, since transformers, torch and numpy were already present from the earlier torch install.
+
+### Changed Artifacts
+- .venv - added kokoro-onnx 0.6.1, soundfile 0.14.0, phonemizer 3.4.0, joblib 1.6.0
+
+### Verification State
+- hyperframes doctor now reports Kokoro TTS and MusicGen deps installed, alongside whisper-cpp.
+- The only remaining doctor failure is Docker not running, which is a user action and optional.
+
+### Unresolved Items
+- Kokoro and MusicGen supersede the corresponding entry in CTX-000004; that item is now closed.
+- Three free provider keys remain outstanding by user instruction.
+- MacTeX still blocked on a real terminal.
+- Two upstream documentation defects recorded but unreported.
+- Commit-attribution conflict still unresolved.
+
+### Next Action
+Await the user's first production request, or direction on the outstanding items.
+
+### Next Gate
+User decision before the first real production run.
+
+<!-- context-entry:end -->
