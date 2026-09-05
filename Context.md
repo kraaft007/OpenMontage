@@ -258,3 +258,63 @@ Await the user's first production request, or direction on the outstanding items
 User decision before the first real production run.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000007 | handoff
+
+- Timestamp: 2026-09-05T15:42:18Z
+- Lifecycle: implement
+- Session: SES-20260904T225721Z-claude-code-e0766002
+- Harness: claude-code
+- Supersedes: none
+
+### Recipient
+The next Claude Code session working on OpenMontage.
+
+### Objective
+Complete the Spacesuit Bridge video by driving the cinematic pipeline properly, rather than by calling generation tools directly.
+
+### Current State
+- OpenMontage is installed and verified: 59 of 117 tools configured, all three composition runtimes green, contract tests 1210 passed with 7 skipped.
+- One paid clip exists: projects/spacesuit-bridge/assets/video/shot01-bridge-reveal.mp4, 8.0s, 1280x720, h264 with AAC audio. $0.80 spent of a $10 budget.
+- The user accepted the likeness as good enough for a prototype. A known defect remains: the suit carries a United States flag patch and the user is Canadian.
+- The clip's gemini_omni interaction is stored and editable, so a surgical edit_video can fix the patch for $0.80.
+- The Backlot board at port 8004 shows a project card but an empty filmstrip. This is the direct consequence of the mistake recorded below.
+
+### Governing Artifacts
+- AGENT_GUIDE.md - Rule Zero, mandatory preflight, project directory convention at lines 203 to 231
+- pipeline_defs/cinematic.yaml - the manifest for this production
+- skills/pipelines/cinematic/ - stage director skills, read each before executing its stage
+- .agents/skills/gemini-omni/SKILL.md - prompt tags, timecodes, conversational editing
+- lib/source_media_review.py - required ingest gate if the user imports externally generated footage
+- backlot/README.md - which artifacts each board panel derives from
+
+### Constraints
+- Rule Zero: all production goes through the pipeline. Do not call generation tools directly.
+- Budget is $10 total with single_action_approval_usd at 0.50, so every video generation needs explicit user approval before spending.
+- Live keys are OPENAI_API_KEY, GEMINI_API_KEY and RUNWAYML_API_SECRET. FAL_KEY, MINIMAX_API_KEY and the three free stock keys are not set.
+- Local video generation stays disabled; that decision was made deliberately and agreed.
+- Every tool must receive an explicit output_path under projects/spacesuit-bridge/.
+
+### Verification State
+- Three registry-contradicting facts were verified this session and must not be re-derived from the registry alone.
+- First: gemini_omni_video accepts an opening frame through the FIRST_FRAME prompt tag even though its supports map says first_last_frame_to_video is False. That flag only means it cannot pin both ends. Frame-chained continuity therefore works today with the existing key and no new spend.
+- Second: the repo's hardcoded cost constants are wrong in both directions. kling_video under-estimates by about 3.5 times, quoting $0.02 per second against fal's published $0.07. minimax_video over-estimates by 1.6 to 2.9 times. Budget mode warn meters against these figures.
+- Third: selector tools are excluded from provider_menu output by design. Absence from that menu is not unavailability; call get_status directly. Reading the menu naively produced a false negative earlier in this session.
+- Provider pricing was checked against primary sources: fal publishes Kling 2.5 Turbo Pro at $0.07 per second and Hailuo-02 at $0.045 per second for 768p. MiniMax's own package rate works out to $0.266 per point against fal's $0.27 for the same clip, so fal's markup is effectively zero while removing MiniMax's $1000 minimum commitment.
+
+### Unresolved Items
+- The suit's flag patch is still wrong.
+- Whether to buy FAL_KEY, which unlocks ten already-built tools for one environment variable and no engineering.
+- Whether to build an OpenRouter video tool. None exists: the repo has one vestigial comment in config.yaml and zero Python references. OpenRouter does now serve video, and Veo 3.1 Lite at $0.03 to $0.08 per second is the cheapest continuity route found.
+- Whether to import footage the user generates in their own Runway, Grok and Gemini subscriptions. This is likely the strongest route and lib/source_media_review.py is the required gate for it.
+- Three free provider keys remain unobtained by user instruction.
+- MacTeX remains blocked because the cask is a Pkg needing sudo and this shell has no tty.
+
+### First Action
+Read pipeline_defs/cinematic.yaml, then run the mandatory preflight and present the capability menu. Do not generate anything before the user approves a production plan. Backfilling the pipeline's artifacts is what will populate the Backlot filmstrip.
+
+### Next Gate
+User approval of the production plan and of any spend above $0.50 before asset generation resumes.
+
+<!-- context-entry:end -->
