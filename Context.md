@@ -318,3 +318,103 @@ Read pipeline_defs/cinematic.yaml, then run the mandatory preflight and present 
 User approval of the production plan and of any spend above $0.50 before asset generation resumes.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000008 | session-start
+
+- Timestamp: 2026-09-05T17:05:54Z
+- Lifecycle: implement
+- Session: SES-20260905T170554Z-claude-code-110b44a5
+- Harness: claude-code
+- Supersedes: none
+
+### Objective
+Add the provider API keys the user obtained, verify the resulting capability change, and correct the handoff that had already been written against the pre-key state.
+
+### Previous State
+- CTX-000007 closed the prior session with a handoff recording 59 of 117 tools and FAL_KEY unset.
+- The user then obtained and entered FAL_KEY plus four free stock and audio keys, invalidating those figures.
+
+### Governing Artifacts
+- .env - provider configuration, gitignored
+- AGENT_GUIDE.md - mandatory preflight and provider menu protocol
+- tools/tool_registry.py - provider_menu_summary is the measurement
+
+### Working Set
+- .env - six provider keys plus BLENDER_PATH
+- next-session.md - the durable handoff the next session loads at startup
+- memory/project_openmontage_state_and_gotchas.md - the project memory entry
+
+### Retrieve When Needed
+- fal.ai published pricing for real per-second rates, since estimate_cost is unreliable
+- backlot/README.md for which artifacts the board joins
+
+### Open Items
+- XAI_API_KEY remains unset.
+- music_library directory exists but holds no audio files.
+- The US flag on the generated suit is still wrong.
+
+### Next Action
+Measure the new capability envelope, then supersede CTX-000007 with a corrected handoff.
+
+### Next Gate
+User decision on which model to use for the next shot.
+
+<!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000009 | handoff
+
+- Timestamp: 2026-09-05T17:06:18Z
+- Lifecycle: implement
+- Session: SES-20260905T170554Z-claude-code-110b44a5
+- Harness: claude-code
+- Supersedes: CTX-000007
+
+### Recipient
+The next Claude Code session working on OpenMontage.
+
+### Objective
+Complete the Spacesuit Bridge video by driving the cinematic pipeline properly, rather than by calling generation tools directly.
+
+### Current State
+- Supersedes CTX-000007, whose tool count and key list were correct when written and are now stale.
+- Configured tools: 74 of 117, all three composition runtimes true. Progression: 47 to 59 via free installs, to 69 with FAL_KEY, to 74 with four free stock and audio keys.
+- FAL_KEY unlocked exactly ten tools, including seedance_video, the repo's self-declared preferred premium default for cinematic and multi-shot work with synchronised audio.
+- Keys in .env: FAL_KEY with its FAL_AI_API_KEY alias, RUNWAYML_API_SECRET, PEXELS_API_KEY, PIXABAY_API_KEY, UNSPLASH_ACCESS_KEY, FREESOUND_API_KEY, BLENDER_PATH. OPENAI_API_KEY and GEMINI_API_KEY are in the shell profile only and would be absent under cron or launchd.
+- Still unset: XAI_API_KEY, MINIMAX_API_KEY, KLING_API_KEY, ELEVENLABS_API_KEY, SUNO_API_KEY.
+- Spend unchanged at 0.80 dollars of a 10 dollar budget. shot01-bridge-reveal.mp4 predates every new key and used Gemini Omni.
+- The Backlot board still shows an empty filmstrip for spacesuit-bridge because the prior session bypassed the pipeline.
+
+### Governing Artifacts
+- AGENT_GUIDE.md - Rule Zero, mandatory preflight, project directory convention at lines 203 to 231
+- pipeline_defs/cinematic.yaml - the manifest for this production
+- skills/pipelines/cinematic/ - stage director skills, read each before executing its stage
+- backlot/README.md - which artifacts each board panel derives from
+- lib/source_media_review.py - required gate for user-supplied footage
+
+### Constraints
+- Rule Zero: all production goes through the pipeline. Do not call generation tools directly.
+- single_action_approval_usd is 0.50 and every video generation exceeds it, so each needs explicit user approval.
+- Local video generation stays disabled by an agreed decision.
+- Every tool must receive an explicit output_path under projects/spacesuit-bridge/.
+
+### Verification State
+- Four registry-contradicting facts from the prior session still hold: gemini_omni_video accepts an opening frame via the FIRST_FRAME prompt tag despite its supports flag; selector tools are excluded from provider_menu so absence there is not unavailability; estimate_cost constants are wrong in both directions; upscale and face_restore are permanently broken by basicsr against torchvision 0.29.
+- Three further wrong predictions were measured when the keys landed. corpus_builder moved to DEGRADED, a real third state, not to AVAILABLE. There is no unsplash_image tool at all; UNSPLASH_ACCESS_KEY only feeds a source adapter used by corpus_builder and direct_clip_search. music_library requires actual audio files, not merely its directory.
+- Real per-second prices verified against fal's own published page: Kling 2.5 Turbo Pro at 0.07, Hailuo-02 768p at 0.045. An eight second clip is roughly 0.36 to 0.56 dollars against the 0.80 Omni charged.
+
+### Unresolved Items
+- Which model to use for shot two onward now that seedance_video and nine other fal tools are available.
+- The suit carries a United States flag patch and the user is Canadian; one surgical edit_video on the stored interaction fixes it.
+- XAI_API_KEY is the only cheap key still unset and its stated strength is reference-conditioned character consistency.
+- music_library holds no audio files.
+- Whether to import footage from the user's own Runway, Grok and Gemini subscriptions through source_media_review.
+
+### First Action
+Read pipeline_defs/cinematic.yaml, run the mandatory preflight, and present the capability menu against the 74-tool envelope. Do not generate anything before the user approves a production plan.
+
+### Next Gate
+User approval of the production plan and of any spend above 0.50 dollars.
+
+<!-- context-entry:end -->
