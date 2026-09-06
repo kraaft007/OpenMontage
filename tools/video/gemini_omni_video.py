@@ -37,7 +37,11 @@ from tools.base_tool import (
 
 _BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 _UPLOAD_URL = "https://generativelanguage.googleapis.com/upload/v1beta/files"
-_DEFAULT_MODEL = "gemini-omni-flash-preview"
+# Model ids verified against ai.google.dev/gemini-api/docs/models/gemini-omni-flash
+# on 2026-09-05. 1.1 is the stable line; scene extension (10s of prior context,
+# cumulative 40s) and first/last-frame control exist only there.
+_DEFAULT_MODEL = "gemini-omni-1.1-flash"
+_MODELS = ["gemini-omni-1.1-flash", "gemini-omni-flash-preview"]
 # Billed at 5,792 output tokens per second of 720p video, $17.50/1M tokens
 # (ai.google.dev/gemini-api/docs/pricing) — effectively ~$0.10 per second.
 _COST_PER_SECOND = 0.10
@@ -75,9 +79,13 @@ class GeminiOmniVideo(BaseTool):
         "native_audio": True,
         "text_rendering": True,
         "timecode_control": True,
-        # Preview limitations — no sampler controls of any kind.
+        # No sampler controls of any kind on either model id.
         "seed": False,
         "negative_prompt": False,
+        # 1.1 the MODEL supports first/last-frame control and resolutions above
+        # 720p; this TOOL sends neither field yet, so the flag stays False. It
+        # describes what the tool can request, not what the model can do. The
+        # fal route (gemini_omni_fal) does plumb end_image_url and resolution.
         "first_last_frame_to_video": False,
     }
     best_for = [
@@ -102,6 +110,15 @@ class GeminiOmniVideo(BaseTool):
         "type": "object",
         "required": ["prompt"],
         "properties": {
+            "model": {
+                "type": "string",
+                "enum": _MODELS,
+                "default": _DEFAULT_MODEL,
+                "description": (
+                    "gemini-omni-1.1-flash adds scene extension, first/last-frame "
+                    "control and 4K; the -preview id is the older first model."
+                ),
+            },
             "prompt": {
                 "type": "string",
                 "description": (
@@ -378,8 +395,9 @@ class GeminiOmniVideo(BaseTool):
         except Exception as e:
             return ToolResult(success=False, error=f"Gemini Omni input preparation failed: {e}")
 
+        model = inputs.get("model") or _DEFAULT_MODEL
         payload: dict[str, Any] = {
-            "model": _DEFAULT_MODEL,
+            "model": model,
             # Plain string for text-only turns (the documented minimal form),
             # typed parts when images or an uploaded video ride along.
             "input": prompt if not parts else parts + [{"type": "text", "text": prompt}],
@@ -435,7 +453,7 @@ class GeminiOmniVideo(BaseTool):
             success=True,
             data={
                 "provider": self.provider,
-                "model": _DEFAULT_MODEL,
+                "model": model,
                 "prompt": prompt,
                 "operation": operation,
                 "output": str(output_path),
@@ -448,5 +466,5 @@ class GeminiOmniVideo(BaseTool):
             artifacts=[str(output_path)],
             cost_usd=self.estimate_cost(inputs),
             duration_seconds=round(time.time() - start, 2),
-            model=_DEFAULT_MODEL,
+            model=model,
         )

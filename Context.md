@@ -519,3 +519,51 @@ Wait for the user at the proposal gate. On approval, write the checkpoint comple
 Proposal approval, including explicit approval of the 0.56 dollar sample generation, which exceeds the 0.50 single_action_approval_usd threshold.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000012 | checkpoint
+
+- Timestamp: 2026-09-06T00:56:45Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Enable Gemini Omni 1.1 Flash through the existing keys and verify the request contract before any paid call.
+
+### Decisions Since Previous Boundary
+- d-013 capability_extension: user approved repointing gemini_omni_fal at the v1.1 endpoints and defaulting gemini_omni_video to gemini-omni-1.1-flash. Supersedes d-012, which was proposed-only.
+- d-014 provider_selection: Omni 1.1 via fal now recommended over grok_video. Supersedes d-011. Costs 1.20 dollars more across four shots and buys first-and-last-frame continuity plus a 0.24 dollar likeness draft. Still not user-approved; the gate stays open.
+- A material correction to what d-011 and d-012 claimed: scene extension is NOT exposed on fal. It is a multi-turn previous_interaction_id workflow on Google's Interactions API and therefore belongs to gemini_omni_video, not the fal route.
+
+### Changed Artifacts
+- tools/video/gemini_omni_fal.py - v1.1 endpoints, resolution tiers, end_image_url, reference_video_urls, resolution-aware cost, version 0.3.0
+- tools/video/gemini_omni_video.py - default model gemini-omni-1.1-flash, model now selectable, preview id retained
+- tests/tools/test_gemini_omni_fal_v11_payloads.py - new, 10 tests locking payload shape and per-resolution pricing
+- tests/tools/test_new_video_model_support.py, test_gemini_omni_video.py, test_provider_model_defaults.py - updated for the new endpoints and model, and gemini_omni_video added to the model-default guard
+- projects/spacesuit-bridge/artifacts/proposal_packet.json - assets stage, cost estimate and alternative paths rebuilt around Omni 1.1
+- projects/spacesuit-bridge/artifacts/decision_log.json - d-013 and d-014 appended, 14 decisions total
+
+### Verification State
+- All four fal operations were diffed against fal's LIVE OpenAPI documents at fal.ai/api/openapi/queue/openapi.json. Exact key match on every operation, zero unknown fields, zero missing required fields, correct queue URLs. Zero dollars spent: requests.post was intercepted before send.
+- Model ids gemini-omni-1.1-flash and gemini-omni-flash-preview verified against ai.google.dev model documentation rather than a launch article.
+- Full test suite: 1839 passed, 12 skipped, 3 xfailed, 0 failed. Baseline before the change was 1829 passed; the 10 new tests are the difference.
+- Corrected a fourth wrong in-repo price constant. The flat 0.13 per second over-reported 720p by 30 percent. Real tiers are 0.03, 0.10, 0.15 and 0.30 per second.
+- The live Backlot board on port 8004 serves 14 decisions and the revised 3.44 dollar plan.
+- Spend still 0.80 of 10.00. Nothing generated.
+
+### Unresolved Items
+- The proposal gate is still open. No concept, provider, runtime, duration or aspect ratio has been chosen.
+- gemini_omni_video does not plumb 1.1's first-and-last-frame or above-720p resolution fields, so its supports map still reports first_last_frame_to_video false. That is accurate for the tool and is documented in a comment.
+- The fal edit endpoint returns an interaction_id but accepts none as input, so multi-turn resume is unavailable on that route.
+- The United States flag patch is still in shot01 and is folded into the regeneration decision.
+- These tool changes diverge from upstream calesthio/OpenMontage and are candidates for a pull request.
+
+### Next Action
+Wait at the proposal gate. On approval, generate one 360 pixel likeness draft at 0.24 dollars, compare it against shot01, then proceed to the script stage.
+
+### Next Gate
+Proposal approval. The 0.24 dollar draft sits under the 0.50 single-action threshold; the four 720p takes at 3.20 dollars do not.
+
+<!-- context-entry:end -->

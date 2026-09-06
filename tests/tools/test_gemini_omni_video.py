@@ -131,7 +131,7 @@ def test_gemini_omni_text_to_video_via_uri_delivery(monkeypatch, tmp_path, gemin
     assert result.data["editable"] is True
 
     payload = calls["post"][0]["json"]
-    assert payload["model"] == "gemini-omni-flash-preview"
+    assert payload["model"] == "gemini-omni-1.1-flash"
     assert payload["input"] == "A marble rolling on a track, single continuous shot."
     assert payload["response_format"] == {"type": "video", "aspect_ratio": "9:16", "delivery": "uri"}
     assert calls["post"][0]["headers"]["x-goog-api-key"] == "test-gemini-key"
