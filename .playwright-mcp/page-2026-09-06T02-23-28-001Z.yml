@@ -1,0 +1,210 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "Backlot" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - heading "Spacesuit Bridge" [level=1] [ref=e7]
+    - generic [ref=e8]: cinematic pipeline
+    - button "Switch to light theme" [ref=e9] [cursor=pointer]:
+      - generic [aria-hidden] [ref=e10]: ☀
+    - generic [ref=e11]: ◈ AWAITING YOU
+    - generic [ref=e13]:
+      - generic [ref=e14]: $0.00
+      - generic [ref=e15]: generation spend
+  - navigation [ref=e16]:
+    - generic [ref=e17] [cursor=pointer]:
+      - generic [ref=e18]: ✓
+      - generic [ref=e19]: research
+      - generic [ref=e20]: 10:08:45 PM
+    - generic [ref=e21] [cursor=pointer]:
+      - generic [ref=e23]: ◈
+      - generic [ref=e24]: proposal
+      - generic [ref=e25]: awaiting your approval reply in chat to continue
+    - generic [ref=e26] [cursor=pointer]:
+      - generic [ref=e28]: "1"
+      - generic [ref=e29]: script
+    - generic [ref=e30] [cursor=pointer]:
+      - generic [ref=e32]: "2"
+      - generic [ref=e33]: scene_plan
+    - generic [ref=e34] [cursor=pointer]:
+      - generic [ref=e36]: "3"
+      - generic [ref=e37]: assets
+    - generic [ref=e38] [cursor=pointer]:
+      - generic [ref=e40]: "4"
+      - generic [ref=e41]: edit
+    - generic [ref=e42] [cursor=pointer]:
+      - generic [ref=e44]: "5"
+      - generic [ref=e45]: compose
+    - generic [ref=e46] [cursor=pointer]:
+      - generic [ref=e48]: "6"
+      - generic [ref=e49]: publish
+  - generic [ref=e50]:
+    - generic [ref=e51]: scrub the whole run
+    - generic [ref=e52] [cursor=pointer]: ▶ REPLAY RUN
+  - generic [ref=e53]:
+    - generic [ref=e54]: ◈
+    - generic [ref=e55]: The proposal stage is waiting for your review. The agent is paused at this gate — reply in chat to approve or request changes.
+  - generic [ref=e56]:
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: REVIEW GATE
+            - heading "proposal is ready for your review" [level=2] [ref=e62]
+            - paragraph [ref=e63]: Review the artifact here, then reply in chat to approve it or request changes.
+          - generic [ref=e64]: PENDING APPROVAL
+        - generic [ref=e65]: SELF-REVIEW 0 critical · 0 suggestions
+        - article [ref=e67]:
+          - generic [ref=e68]: proposal packet
+          - heading "The Commander Who Chose To Go" [level=2] [ref=e69]
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]: runtime
+              - generic [ref=e73]: remotion
+            - generic [ref=e74]:
+              - generic [ref=e75]: pipeline
+              - generic [ref=e76]: cinematic
+            - generic [ref=e77]:
+              - generic [ref=e78]: estimated cost
+              - generic [ref=e79]: $3.44
+            - generic [ref=e80]:
+              - generic [ref=e81]: concepts
+              - generic [ref=e82]: "4"
+          - list [ref=e83]:
+            - listitem [ref=e84]:
+              - generic [ref=e85]:
+                - text: The Commander Who Chose To Go
+                - generic [ref=e86]: SELECTED
+              - paragraph [ref=e87]: A man old enough to know exactly what he is leaving takes the bridge anyway — and smiles as the stars begin to pull.
+            - listitem [ref=e88]:
+              - generic [ref=e89]: One Held Breath Before The Jump
+              - paragraph [ref=e90]: Three shots. Almost no cutting. The only fast thing in the film is light itself.
+            - listitem [ref=e91]:
+              - generic [ref=e92]: Quiet Bridge, Loud Universe
+              - paragraph [ref=e93]: The ship barely makes a sound until the moment it does.
+            - listitem [ref=e94]:
+              - generic [ref=e95]: Logbook Of A Late Departure
+              - paragraph [ref=e96]: Four title cards, four shots, one man, and a date that has not happened yet.
+          - paragraph [ref=e97]: WHY THIS CONCEPT PROPOSED, NOT YET APPROVED — this field records the agent's recommendation pending the user's decision at this gate. Concept A is recommended because it is the only option derived…
+        - generic [ref=e98]:
+          - generic [ref=e99]: Approval unlocks script.
+          - button "OPEN FULL ARTIFACT" [ref=e100] [cursor=pointer]
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - text: References
+          - generic [ref=e103]: 11 images · click to open full size
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - link [ref=e106] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/CONTACT-SHEET-bridge-formations.jpg
+              - img "CONTACT-SHEET-bridge-formations.jpg" [ref=e107]
+            - generic [ref=e108]: CONTACT-SHEET-bridge-formations.jpg
+          - generic [ref=e109]:
+            - link [ref=e110] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F1-canopy-a.jpg
+              - img "F1-canopy-a.jpg" [ref=e111]
+            - generic [ref=e112]: F1-canopy-a.jpg
+          - generic [ref=e113]:
+            - link [ref=e114] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F1-canopy-b-helmet-on.jpg
+              - img "F1-canopy-b-helmet-on.jpg" [ref=e115]
+            - generic [ref=e116]: F1-canopy-b-helmet-on.jpg
+          - generic [ref=e117]:
+            - link [ref=e118] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F1-canopy-c.jpg
+              - img "F1-canopy-c.jpg" [ref=e119]
+            - generic [ref=e120]: F1-canopy-c.jpg
+          - generic [ref=e121]:
+            - link [ref=e122] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F2-command-deck-a.jpg
+              - img "F2-command-deck-a.jpg" [ref=e123]
+            - generic [ref=e124]: F2-command-deck-a.jpg
+          - generic [ref=e125]:
+            - link [ref=e126] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F2-command-deck-b.jpg
+              - img "F2-command-deck-b.jpg" [ref=e127]
+            - generic [ref=e128]: F2-command-deck-b.jpg
+          - generic [ref=e129]:
+            - link [ref=e130] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F2-command-deck-c-second-figure.jpg
+              - img "F2-command-deck-c-second-figure.jpg" [ref=e131]
+            - generic [ref=e132]: F2-command-deck-c-second-figure.jpg
+          - generic [ref=e133]:
+            - link [ref=e134] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F3-cupola-a.jpg
+              - img "F3-cupola-a.jpg" [ref=e135]
+            - generic [ref=e136]: F3-cupola-a.jpg
+          - generic [ref=e137]:
+            - link [ref=e138] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F3-cupola-b.jpg
+              - img "F3-cupola-b.jpg" [ref=e139]
+            - generic [ref=e140]: F3-cupola-b.jpg
+          - generic [ref=e141]:
+            - link [ref=e142] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/F3-cupola-c.jpg
+              - img "F3-cupola-c.jpg" [ref=e143]
+            - generic [ref=e144]: F3-cupola-c.jpg
+          - generic [ref=e145]:
+            - link [ref=e146] [cursor=pointer]:
+              - /url: /media/spacesuit-bridge/assets/images/steve-reference.jpg
+              - img "steve-reference.jpg" [ref=e147]
+            - generic [ref=e148]: steve-reference.jpg
+    - complementary [ref=e149]:
+      - generic [ref=e150]:
+        - generic [ref=e151]:
+          - heading "Decisions" [level=2] [ref=e152]
+          - generic [ref=e153]: decision_log.json
+        - generic [ref=e154]:
+          - generic [ref=e155]:
+            - generic [ref=e156]: concept_selection · 0.95
+            - generic [ref=e157]: Story and staging for the Spacesuit Bridge piece → A last departure from Earth. Seated in the captain's chair, forward-facing, presses one control, goes to warp. Earth is behind him and he never looks back.
+            - generic [ref=e158]: "USER-DIRECTED, not agent-recommended. Three consequences bind the rest of the production. First, shot01's staging is superseded — he stands, holds a helmet and faces camera there; the film needs him seated and forward-facing, so that beat is regenerated rather than reused. Second, the reverse angle becomes the key shot: with Earth aft and the subject forward, only a camera in front of him holds his face and the thing he is leaving in one frame, and he is not looking at it. Third, the bridge formation must physically permit Earth to be behind the chair while he faces forward, which reshapes two of the three formations under consideration."
+            - generic [ref=e159]: "also considered: Departure with Earth visible ahead, watched as it recedes · Standing at a console holding a helmet, as in shot01"
+          - generic [ref=e160]:
+            - generic [ref=e161]: provider_selection · 0.9 · revised
+            - generic [ref=e162]: Video generation provider for the remaining shots → Omni 1.1 on the direct Google key — $0.24 at 360p, $0.80 at 720p per 8s
+            - generic [ref=e163]: "SUPERSEDES d-014. The user asked why a gateway was being used when a direct key exists, and the question was right. The fal recommendation was tool-shaped: fal was where the plumbing had just been written, not the better route. Verified: the direct Interactions API accepts resolution inside response_format with the same four tiers at the same prices, supports <FIRST_FRAME>/<LAST_FRAME> keyframe control, and is the only route offering scene extension. The tool was simply not sending those fields. Still NOT user-approved as a provider choice; the gate remains open."
+            - generic [ref=e164]: "also considered: Omni 1.1 through the fal gateway · grok_video — $0.56 per 8s 720p"
+          - generic [ref=e165]:
+            - generic [ref=e166]: capability_extension · 0.95 · revised
+            - generic [ref=e167]: Reaching Gemini Omni 1.1 Flash through the existing fal key → Repoint gemini_omni_fal at v1.1 and default gemini_omni_video to gemini-omni-1.1-flash
+            - generic [ref=e168]: "SUPERSEDES d-012, which was proposed-only. User approved. One material correction to what d-012 claimed: scene extension is NOT exposed on fal — it is a multi-turn previous_interaction_id workflow on Google's Interactions API and therefore belongs to gemini_omni_video, which now defaults to the 1.1 model. fal contributes first-and-last-frame interpolation via end_image_url, up to three reference videos of three seconds each, resolution tiers, and a 360p draft at $0.03/s. Also fixed a fourth wrong in-repo price constant: the flat $0.13/s over-reported 720p by 30 percent."
+            - generic [ref=e169]: "also considered: Wait for upstream to add 1.1"
+          - generic [ref=e170]:
+            - generic [ref=e171]: budget_tradeoff · 0.65
+            - generic [ref=e172]: Whether to regenerate the existing shot01 or keep it → Regenerate all four shots on grok_video — $2.24
+            - generic [ref=e173]: Recommended but explicitly conditional on the sample. One grok_video shot is generated first at $0.56 and compared against shot01; only if its likeness is at least as good does the full regeneration proceed. Regenerating is the cheaper route to both a coherent look and a correct flag, but the user has already accepted shot01's likeness and that acceptance is not something to spend past without checking.
+            - generic [ref=e174]: "also considered: Keep shot01 and generate three new shots — $1.68 · Generate everything on gemini_omni_video — $2.40"
+          - generic [ref=e175]:
+            - generic [ref=e176]: concept_selection · 0.6
+            - generic [ref=e177]: Cinematic concept direction → The Commander Who Chose To Go — arrival, resolve, release (32s, 4 shots)
+            - generic [ref=e178]: RECOMMENDATION ONLY — the user has not chosen. Concept A is put forward because it is the only option grounded in an asset the user has already seen and accepted, it carries the lowest creative risk, it fits the budget with room to spare, and its warmth is the specific gap the research found in short generated sci-fi. The user is explicitly invited to select, mix elements across concepts, modify, or redirect entirely.
+            - generic [ref=e179]: "also considered: One Held Breath Before The Jump — stillness, decision, acceleration (24s, 3 shots) · Quiet Bridge, Loud Universe — pressure, held silence, release (30s, 4 shots) · Logbook Of A Late Departure — entry, log, departure (40s, 4 shots plus cards)"
+          - generic [ref=e180]:
+            - generic [ref=e181]: playbook_override · 0.85
+            - generic [ref=e182]: Style playbook for the piece → No playbook — carry the direction in art_direction instead
+            - generic [ref=e183]: Checked all five installed playbooks directly rather than trusting the manifest's recommendation. None fits, and the recommended one is the worst fit of the five. The visual direction is carried explicitly in production_plan.art_direction so nothing is left implicit. custom_allowed is true in the manifest, so a project-specific playbook could be authored later if this piece grows into a series.
+            - generic [ref=e184]: "also considered: flat-motion-graphics — the manifest's recommended playbook for this pipeline · premium-minimalist — calm, editorial, precise, deliberate"
+          - generic [ref=e185]:
+            - generic [ref=e186]: music_source · 0.8
+            - generic [ref=e187]: Music and ambience source for the piece → freesound_music — royalty-free search, free
+            - generic [ref=e188]: Free, available, auditionable before use, and strongest for the ambient and drone palette the research points to. Resolved at proposal rather than deferred to the asset stage so silence is never a surprise. Under Concept C this decision is superseded by a deliberate no-music choice before the jump.
+            - generic [ref=e189]: "also considered: User's own music_library/ tracks · pixabay_music — royalty-free search, free · google_music — generated bed, about $0.08 for 40 seconds"
+          - generic [ref=e190]:
+            - generic [ref=e191]: composition_mode · 0.7
+            - generic [ref=e192]: Composition authoring mode — templated or atelier → Templated — assemble stock scene types into CinematicRenderer
+            - generic [ref=e193]: The deciding rule is where the creative surface lives. Here it is the four generated shots, not the composition layer, so atelier's cost buys nothing visible. This flips to atelier if the user selects Concept D.
+            - generic [ref=e194]: "also considered: Atelier — hand-authored bespoke composition"
+      - generic [ref=e195]:
+        - generic [ref=e196]:
+          - heading "Activity" [level=2] [ref=e197]
+          - generic [ref=e198]: events.jsonl
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - generic [ref=e201]: 10:05:11 PM
+            - generic [ref=e202]: contact_sheet
+            - generic [ref=e203]: ✓ 0.1s
+          - generic [ref=e204]:
+            - generic [ref=e205]: 07:47:06 PM
+            - generic [ref=e206]: gemini_omni_video
+            - generic [ref=e207]: ✓ 45.4s $0.80
