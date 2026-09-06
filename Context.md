@@ -662,3 +662,52 @@ Return to the brainstorm. The user picks a bridge formation, or asks for the hyb
 Formation choice, then proposal approval covering concept, provider, runtime and aspect ratio.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000015 | checkpoint
+
+- Timestamp: 2026-09-06T02:41:31Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Give the production work real backup and version history without polluting the OpenMontage fork.
+
+### Decisions Since Previous Boundary
+- Rejected the mono-repo. The projects/ ignore rule is upstream's own line 29, so un-ignoring it would edit an upstream file and add conflict surface, and it would bind generated media to the fork's history permanently. The fork's .git is already 76 MB and a finished production runs to hundreds of megabytes.
+- Chose a nested repository instead. projects/spacesuit-bridge is now its own git repo pushed to a private kraaft007/spacesuit-bridge. Because the parent already ignores projects/, git never looks inside, so the nested repo is invisible to the fork and needs no gitignore change.
+- d-017 recorded earlier: bridge formation locked to F4, a two-seat cockpit the user generated himself outside the three formations offered.
+- Backlot References panel built and opened as pull request 634.
+
+### Changed Artifacts
+- New private repository kraaft007/spacesuit-bridge, 31 files, first commit 276c9b9
+- projects/spacesuit-bridge/README.md and .gitignore - new
+- projects/spacesuit-bridge/assets/images/F4-two-seat-cockpit-empty-copilot.jpg - selected formation, renamed from a filename containing spaces
+- backlot/state.py, ui/board.js, ui/board.css - References panel
+- Pull request 634 opened against calesthio/OpenMontage
+
+### Verification State
+- Secret scan before publishing: no key values present. Matches on API_KEY are key NAMES written in prose, for example the note that XAI_API_KEY is 84 characters. A value-shaped scan for xai-, sk-, AIza, key_ and uuid:secret patterns returned nothing.
+- Fork remains clean after the nested repo was created: git status reports no changes, confirming git does not descend into an ignored directory.
+- Backed up: 31 files, 16 artifacts and 13 media. Not backed up by choice: projects/demos, 12 MB, regenerable from scripts/backlot_simulate_run.py.
+- References panel verified in a real browser through Playwright: renders, 12 images, 12 working media links. The single console error is a pre-existing missing favicon.
+- Suite on the pull request branch: 1828 passed, 12 skipped, 3 xfailed.
+- Syncthing was found to already replicate ~/Code including projects/, but replication is not backup: deletions propagate and .git is excluded, so no history travels. The user directed that Syncthing be disregarded.
+- Spend still 0.80 of 10.00.
+
+### Unresolved Items
+- The proposal gate is still open. Formation is locked but concept, duration, aspect ratio and provider approval are not.
+- The four concept options in proposal_packet are stale. All predate the locked story and none knows about F4 or the empty copilot seat.
+- One creative question is outstanding and shapes the shot list: whether the subject acknowledges the gloves on the empty seat.
+- Two pull requests await maintainer review: 633 for the Omni fixes, 634 for the References panel.
+- The United States flag patch recurs in F4 as well and rides into the regeneration.
+
+### Next Action
+Rewrite the sequence around the locked story and F4, then take it to the proposal gate.
+
+### Next Gate
+Approval of the rewritten sequence, and of any spend above 0.50 dollars.
+
+<!-- context-entry:end -->
