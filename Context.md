@@ -613,3 +613,52 @@ Wait at the proposal gate. On approval, run one 360 pixel draft on the direct ro
 Proposal approval. The 0.24 dollar draft is under the 0.50 single-action threshold; the four 720p takes at 3.20 dollars are not.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000014 | checkpoint
+
+- Timestamp: 2026-09-06T02:11:52Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Isolate local additions from upstream, and upstream the Omni fixes so the divergence can go to zero.
+
+### Decisions Since Previous Boundary
+- User approved both the om_ext isolation package and opening an upstream pull request.
+- Additions go in om_ext, loaded through the package_name argument that ToolRegistry.discover already accepts. No upstream file is modified, so a merge can never conflict with them.
+- No schema edit was made. research_brief.metadata is declared as an unconstrained object, so local reference images validate today under metadata.local_visual_references. A planned upstream schema change was cancelled after testing.
+- Fixes to upstream files cannot be isolated by nature, so they went to a pull request rather than being carried indefinitely.
+
+### Changed Artifacts
+- om_ext/ - new isolated package: contact_sheet tool, visual-reference-board skill addendum, five tests, README stating the trade-off
+- projects/spacesuit-bridge/artifacts/research_brief.json - nine local visual references with per-image defects, contact sheet path, provenance, and the known gap against decision d-016
+- projects/spacesuit-bridge/artifacts/source_media_review.json - ingest gate output for the nine stills
+- projects/spacesuit-bridge/assets/images/ - nine files renamed from Unknown-N to self-describing names, plus CONTACT-SHEET-bridge-formations.jpg
+- Branch fix/gemini-omni-1.1 pushed to origin; pull request 633 opened against calesthio/OpenMontage
+
+### Verification State
+- Isolation is asserted by a test, not by intention: discover('tools') must NOT find contact_sheet and discover('om_ext') must. Measured 121 upstream tools, one added.
+- No upstream module imports om_ext. Verified with a word-boundary grep after a naive grep produced a false positive inside the word from_extension.
+- Full suite on main: 1850 passed, 12 skipped, 3 xfailed.
+- Full suite on the pull request branch, which carries upstream code plus the fix only: 1845 passed, 12 skipped, 3 xfailed.
+- The pull request branch was confirmed to carry exactly seven files. om_ext, Context.md and projects are absent from it; only gitignored pycache directories remained on disk.
+- Pull request 633 is OPEN: 7 files changed, 401 insertions, 44 deletions.
+- Spend still 0.80 of 10.00. Nothing generated this session.
+
+### Unresolved Items
+- The proposal gate is still open. No concept, provider, runtime, duration or aspect ratio chosen, and no bridge formation picked.
+- All nine bridge stills contradict decision d-016: they place Earth ahead of the subject with the camera behind him, so he is looking at what he is meant to refuse to look at. Valid for choosing a room, invalid as shot references.
+- Formations F2 and F3 as generated have no control within reach of the chair, so the agreed action of pressing a button cannot be staged in them without a regeneration.
+- Pull request 633 awaits maintainer review. Until it merges or closes, those seven files are the entire conflict surface against upstream.
+- The United States flag patch recurs in the newly generated stills as well as in shot01.
+
+### Next Action
+Return to the brainstorm. The user picks a bridge formation, or asks for the hybrid prompt combining F2's empty room with F1's reachable console.
+
+### Next Gate
+Formation choice, then proposal approval covering concept, provider, runtime and aspect ratio.
+
+<!-- context-entry:end -->
