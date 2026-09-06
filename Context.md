@@ -418,3 +418,104 @@ Read pipeline_defs/cinematic.yaml, run the mandatory preflight, and present the 
 User approval of the production plan and of any spend above 0.50 dollars.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000010 | session-start
+
+- Timestamp: 2026-09-06T00:25:21Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Objective
+Run the cinematic pipeline properly for projects/spacesuit-bridge so each stage writes its real canonical artifact and the Backlot board fills in.
+
+### Previous State
+- CTX-000009 handoff closed the previous session idle with the board filmstrip empty because generation tools were called directly, bypassing Rule Zero.
+- projects/spacesuit-bridge/ holds project.json, events.jsonl, assets/video/shot01-bridge-reveal.mp4 and assets/images/steve-reference.jpg. artifacts/ and renders/ are empty and no checkpoint files exist.
+- Spend is 0.80 dollars of a 10 dollar budget.
+
+### Governing Artifacts
+- AGENT_GUIDE.md - Rule Zero, mandatory preflight, project directory convention, checkpoint protocol
+- pipeline_defs/cinematic.yaml - stage order, required tools, gates, human_approval_default per stage
+- skills/pipelines/cinematic/ - one director skill per stage, read before executing that stage
+- schemas/artifacts/ - JSON schemas each canonical artifact must validate against
+- lib/checkpoint.py - checkpoint writes and gate enforcement
+
+### Working Set
+- projects/spacesuit-bridge/artifacts/ - target for brief, script, scene_plan, asset_manifest, edit_decisions, render_report
+- projects/spacesuit-bridge/checkpoint_STAGE.json - per-stage checkpoints the board watches
+- tools/tool_registry.py - preflight via provider_menu_summary()
+
+### Retrieve When Needed
+- backlot/README.md - which artifacts each board panel derives from
+- skills/meta/checkpoint-protocol.md and skills/meta/reviewer.md
+- .agents/skills/seedance-2-0/ and .agents/skills/gemini-omni/ - Layer 3 prompting knowledge before any generation call
+- lib/source_media_review.py - required gate if user-supplied footage is imported
+
+### Open Items
+- Which model for shot two onward now that seedance_video and nine other fal tools are live.
+- The suit carries a United States flag patch and the user is Canadian.
+- XAI_API_KEY remains unset; its stated strength is reference-conditioned character consistency.
+- music_library holds no audio files.
+- Whether to import footage from the user's own Runway, Grok and Gemini subscriptions through source_media_review.
+
+### Next Action
+Read pipeline_defs/cinematic.yaml, run the mandatory preflight against the 74-tool envelope, then read the idea-stage director skill and execute the first stage. Generate nothing before the user approves a production plan.
+
+### Next Gate
+User approval of the production plan and of any single action above 0.50 dollars.
+
+<!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000011 | checkpoint
+
+- Timestamp: 2026-09-06T00:41:12Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Run the cinematic pipeline properly for spacesuit-bridge so each stage writes its real canonical artifact.
+
+### Decisions Since Previous Boundary
+- d-003 provider_selection: grok_video at 0.56 dollars per 8-second 720p shot, chosen over seedance_video at 2.43 and gemini_omni_video at 0.80. Reference-image conditioning is the capability the piece needs and seedance for four shots exceeds the whole remaining budget.
+- d-005 render_runtime_selection: remotion recommended, with hyperframes and ffmpeg both measured and presented. Not locked; user_approved is false.
+- d-006 composition_mode: templated for concepts A, B and C because the generated footage is the entire creative surface; atelier only if the user picks concept D.
+- d-007 music_source: freesound_music, free and auditionable. music_library is empty so the music_library tool reports unavailable.
+- d-008 playbook_override: no style playbook. All five installed playbooks were read and none targets live-action-style cinematic footage; the manifest's recommended flat-motion-graphics is the worst fit of the five.
+- d-010 budget_tradeoff: regenerate all four shots on grok_video for 2.24 dollars rather than keep shot01 for 1.68, conditional on a single sample comparing well. Regenerating fixes the flag patch in the same pass for less than a standalone edit would cost.
+
+### Changed Artifacts
+- projects/spacesuit-bridge/artifacts/research_brief.json - new, schema-valid, 12 web searches, 14 sources, 4 cinematic directions
+- projects/spacesuit-bridge/artifacts/proposal_packet.json - new, schema-valid, 4 concepts, per-item cost estimate, both composition runtimes presented
+- projects/spacesuit-bridge/artifacts/decision_log.json - new, 10 decisions, all user_approved false
+- projects/spacesuit-bridge/checkpoint_research.json - status completed
+- projects/spacesuit-bridge/checkpoint_proposal.json - status awaiting_human, human_approved false
+- projects/spacesuit-bridge/decision_log.json - written at project root by the checkpoint utility's decision-log merge
+- Context.md and Context.html - this ledger
+
+### Verification State
+- Both checkpoints passed lib.checkpoint schema validation; write_checkpoint validates each canonical artifact against schemas/artifacts before writing.
+- get_completed_stages returns research; get_next_stage returns proposal, which is correct for a gate held open.
+- The live Backlot server on port 8004 serves the real state at /api/project/spacesuit-bridge/state: research completed, proposal awaiting_human, three artifacts loaded, ten decisions, cost meter populated.
+- The filmstrip is still empty by design. It joins scene_plan, script and asset_manifest, none of which exist until later stages.
+- Zero dollars spent this session. Spend remains 0.80 of 10.00.
+
+### Unresolved Items
+- User has not selected a concept, a runtime, a duration, or an aspect ratio, and has not approved the 0.56 dollar sample. The proposal gate is open.
+- XAI_API_KEY item is CLOSED. The key is present in .env at 84 characters with an xai- prefix and grok_video reports AVAILABLE. The prior handoff recorded it as unset.
+- The United States flag patch is still present in shot01 and is now folded into the regeneration decision rather than a separate edit.
+- music_library still holds no audio files, but freesound and pixabay search cover the need at zero cost.
+- Importing the user's own Runway, Grok or Gemini footage through source_media_review remains a live alternative path recorded in the proposal.
+
+### Next Action
+Wait for the user at the proposal gate. On approval, write the checkpoint completed with human_approved true, then execute the script stage after reading its director skill.
+
+### Next Gate
+Proposal approval, including explicit approval of the 0.56 dollar sample generation, which exceeds the 0.50 single_action_approval_usd threshold.
+
+<!-- context-entry:end -->
