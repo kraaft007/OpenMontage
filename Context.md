@@ -567,3 +567,49 @@ Wait at the proposal gate. On approval, generate one 360 pixel likeness draft at
 Proposal approval. The 0.24 dollar draft sits under the 0.50 single-action threshold; the four 720p takes at 3.20 dollars do not.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000013 | checkpoint
+
+- Timestamp: 2026-09-06T01:08:17Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Current Objective
+Use Omni 1.1 over the direct Google key rather than through the fal gateway.
+
+### Decisions Since Previous Boundary
+- d-015 provider_selection: gemini_omni_video on the direct Google key replaces gemini_omni_fal as primary. Supersedes d-014. fal is demoted to a fallback failure domain and grok_video to a second fallback.
+- Reverted a quality_score bump from 0.85 to 0.9 on gemini_omni_video. The justification was real, since 1.1 lifted the 720p ceiling, but that value ranks the entire tool fleet through lib/scoring.py and no ranking comparison was run. The reasoning is recorded in a comment so the next session can raise it alongside the measurement.
+
+### Changed Artifacts
+- tools/video/gemini_omni_video.py - plumbs response_format.resolution across four tiers, prices per tier, declares first_last_frame_to_video true, corrected best_for and not_good_for and install_instructions
+- tests/tools/test_gemini_omni_video.py - response_format assertion updated, six tests added for resolution passthrough, per-tier cost and rejection of an unsupported value
+- .agents/skills/gemini-omni/SKILL.md - documents LAST_FRAME, the resolution and draft tier, and scene extension with its constraints; front matter no longer names the preview model as the default
+- projects/spacesuit-bridge/artifacts/proposal_packet.json - assets stage and alternative paths rebuilt around the direct route
+- projects/spacesuit-bridge/artifacts/decision_log.json - d-015 appended, 15 decisions total
+
+### Verification State
+- Direct-route capabilities confirmed against ai.google.dev/gemini-api/docs/omni: response_format accepts type, aspect_ratio, resolution and delivery; resolution takes 360p, 720p default, 1080p and 4k; first and last frame are bound with FIRST_FRAME and LAST_FRAME prompt tags over two images in the input list; continuation uses previous_interaction_id.
+- Measured after the change: both routes quote 0.24 dollars for an 8 second 360p clip and 0.80 for 720p. Identical pricing, and the direct route additionally reports first_last_frame_to_video true and conversational_editing true.
+- Full suite: 1845 passed, 12 skipped, 3 xfailed, 0 failed.
+- A fifth wrong price constant is now fixed. The direct tool's flat 0.10 per second under-quoted 4k by a factor of three and over-quoted a 360p draft by more than three.
+- NOT verifiable the way the fal route was: Google's Interactions API publishes no OpenAPI document to diff a payload against, so the direct request shape rests on documentation plus unit tests rather than a live schema comparison. A 0.24 dollar draft is the cheapest real proof.
+- Spend still 0.80 of 10.00. Nothing generated.
+
+### Unresolved Items
+- The proposal gate is still open. No concept, provider, runtime, duration or aspect ratio chosen.
+- The direct request shape is unverified against a live schema. The 360p draft would settle it for 0.24 dollars, under the single-action threshold.
+- gemini_omni_video's quality_score stays 0.85 pending a fleet ranking comparison.
+- The United States flag patch is still in shot01, folded into the regeneration decision.
+- These tool and skill changes diverge from upstream calesthio/OpenMontage and are candidates for a pull request.
+
+### Next Action
+Wait at the proposal gate. On approval, run one 360 pixel draft on the direct route for 0.24 dollars, which both tests the likeness and proves the request shape, then proceed to the script stage.
+
+### Next Gate
+Proposal approval. The 0.24 dollar draft is under the 0.50 single-action threshold; the four 720p takes at 3.20 dollars are not.
+
+<!-- context-entry:end -->
