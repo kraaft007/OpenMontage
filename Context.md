@@ -711,3 +711,62 @@ Rewrite the sequence around the locked story and F4, then take it to the proposa
 Approval of the rewritten sequence, and of any spend above 0.50 dollars.
 
 <!-- context-entry:end -->
+
+<!-- context-entry:start -->
+## CTX-000016 | handoff
+
+- Timestamp: 2026-09-06T02:53:25Z
+- Lifecycle: implement
+- Session: SES-20260906T002521Z-claude-code-71f63778
+- Harness: claude-code
+- Supersedes: none
+
+### Recipient
+The next Claude Code session working on OpenMontage and the Spacesuit Bridge production.
+
+### Objective
+Rewrite the shot sequence around the now-locked story and bridge, take it to the proposal gate, and on approval generate a cheap likeness draft before any full-resolution spend.
+
+### Current State
+- The cinematic pipeline is genuinely running. research is completed and proposal sits at awaiting_human with a real gate. Artifacts on disk and schema-valid: research_brief, proposal_packet, decision_log with 17 entries, source_media_review.
+- Story is LOCKED by the user: a last departure from Earth. He sits in the captain's chair, presses one control, goes to warp. Earth is behind him and he never looks back. Recorded as d-016.
+- Bridge formation is LOCKED to F4, assets/images/F4-two-seat-cockpit-empty-copilot.jpg. The user generated it himself, outside the three the agent offered, and it beat all of them. Recorded as d-017.
+- The work now lives in its own private repository, kraaft007/spacesuit-bridge, nested inside the fork's ignored projects/ directory. The fork does not see it and needs no gitignore change. Both repos push independently.
+- Spend unchanged at 0.80 dollars of 10.00. Nothing was generated this session.
+
+### Governing Artifacts
+- projects/spacesuit-bridge/artifacts/decision_log.json - 17 decisions, read this first. d-016 story, d-017 formation, d-015 provider.
+- projects/spacesuit-bridge/artifacts/research_brief.json - metadata.local_visual_references carries all ten stills with per-image defects
+- AGENT_GUIDE.md - Rule Zero, mandatory preflight, project directory convention, checkpoint protocol
+- pipeline_defs/cinematic.yaml - stage order and which stages gate
+- om_ext/README.md - why local additions live outside the upstream tree and how the registry reaches them
+
+### Constraints
+- Rule Zero: everything goes through the pipeline. The empty Backlot filmstrip that started this whole thread was caused by calling a generation tool directly.
+- single_action_approval_usd is 0.50. A 360p draft at 0.24 dollars falls under it; four 720p takes at 3.20 do not.
+- Additions belong in om_ext, never in tools/ or skills/. Fixes to upstream files belong in a pull request, not carried locally.
+- Every tool call needs an explicit output_path under projects/spacesuit-bridge/.
+
+### Verification State
+- Gemini Omni 1.1 is now reachable and is the default. gemini_omni_video defaults to gemini-omni-1.1-flash and plumbs response_format.resolution; gemini_omni_fal targets the v1.1 endpoints. Both were pinned to the superseded preview model before.
+- Five wrong in-repo price constants have now been found across sessions: kling_video under-reports 3.5x, minimax_video over-reports, gemini_omni_fal was a flat 0.13 per second against real tiers of 0.03, 0.10, 0.15 and 0.30, and gemini_omni_video was a flat 0.10 correct only at 720p. Do not trust estimate_cost without checking the provider's published page.
+- All four fal operations were diffed against fal's live OpenAPI documents with no network write: exact key match, no unknown fields, correct URLs. This caught a latent 422 — the edit endpoint accepts neither aspect_ratio nor duration.
+- The direct Google route has NO equivalent verification available. Google publishes no OpenAPI document for the Interactions API, so its request shape rests on documentation plus unit tests. The 0.24 dollar draft is the cheapest real proof.
+- Suites: 1850 passed on the fork's main, 1828 and 1845 on the two pull request branches. Zero failures.
+- Two pull requests are open against calesthio/OpenMontage and are the entire conflict surface: 633 for the Omni fixes, seven files, and 634 for the Backlot References panel, three files.
+
+### Unresolved Items
+- ONE QUESTION BLOCKS THE SHOT LIST and only the user can answer it: does he acknowledge the gloves on the empty copilot seat? Ignoring them makes it a film about a man who finished grieving long ago. Touching them, or looking and then turning forward, makes it about the moment he decides to go anyway. It decides whether the sequence needs a close-up.
+- The four concept options in proposal_packet are STALE. Every one predates the locked story and none knows about F4 or the empty seat. Do not present them again; rewrite the sequence.
+- Target duration, delivery aspect ratio and platform are still unset. Vertical 9:16 would change the framing of every shot and must be decided before generation, not in post.
+- The United States flag patch recurs in every generation including F4, and the user is Canadian. It rides into the regeneration prompt rather than needing a separate edit.
+- shot01-bridge-reveal.mp4 is superseded. He stands holding a helmet and faces camera in it; the locked staging is seated and forward-facing.
+- gemini_omni_video.quality_score stays 0.85. Raising it needs a fleet ranking comparison that has not been run; the reasoning is in a comment.
+
+### First Action
+Ask the user the gloves question. Then rewrite the sequence for F4 and the locked story, replace the stale concept options in proposal_packet, and present it at the gate. Generate nothing before approval.
+
+### Next Gate
+User approval of the rewritten sequence, the delivery shape, and any spend above 0.50 dollars.
+
+<!-- context-entry:end -->
