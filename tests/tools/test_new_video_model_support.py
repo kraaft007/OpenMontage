@@ -94,7 +94,7 @@ def test_fal_gemini_omni_and_minimax_h3_are_discovered_and_submit(
         }
     )
     assert gemini.success, gemini.error
-    assert calls["posts"][0][0].endswith("/google/gemini-omni-flash/image-to-video")
+    assert calls["posts"][0][0].endswith("/google/gemini-omni-flash/v1.1/image-to-video")
 
     calls = _queue_mocks(monkeypatch)
     edited = GeminiOmniFalVideo().execute(
@@ -106,10 +106,13 @@ def test_fal_gemini_omni_and_minimax_h3_are_discovered_and_submit(
         }
     )
     assert edited.success, edited.error
-    assert calls["posts"][0][0].endswith("/google/gemini-omni-flash/edit")
+    assert calls["posts"][0][0].endswith("/google/gemini-omni-flash/v1.1/edit")
+    # The edit endpoint inherits aspect_ratio and duration from the source clip;
+    # resolution is the only knob it accepts.
     assert calls["posts"][0][1] == {
         "prompt": "Remove the sign",
         "video_url": "https://video-input",
+        "resolution": "720p",
     }
 
     calls = _queue_mocks(monkeypatch)

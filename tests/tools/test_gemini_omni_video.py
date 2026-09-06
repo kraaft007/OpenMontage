@@ -131,9 +131,14 @@ def test_gemini_omni_text_to_video_via_uri_delivery(monkeypatch, tmp_path, gemin
     assert result.data["editable"] is True
 
     payload = calls["post"][0]["json"]
-    assert payload["model"] == "gemini-omni-flash-preview"
+    assert payload["model"] == "gemini-omni-1.1-flash"
     assert payload["input"] == "A marble rolling on a track, single continuous shot."
-    assert payload["response_format"] == {"type": "video", "aspect_ratio": "9:16", "delivery": "uri"}
+    assert payload["response_format"] == {
+        "type": "video",
+        "aspect_ratio": "9:16",
+        "resolution": "720p",
+        "delivery": "uri",
+    }
     assert calls["post"][0]["headers"]["x-goog-api-key"] == "test-gemini-key"
     assert calls["get"][1]["url"].endswith("files/vid-123:download")
     assert calls["get"][1]["params"] == {"alt": "media"}
@@ -283,3 +288,48 @@ def test_gemini_omni_store_false_marks_result_not_editable(monkeypatch, tmp_path
     assert result.success, result.error
     assert result.data["editable"] is False
     assert calls["post"][0]["json"]["store"] is False
+
+
+def test_resolution_reaches_response_format(monkeypatch, tmp_path, gemini_env):
+    """360p is the draft tier; it must survive into response_format, not be dropped."""
+    from tools.video.gemini_omni_video import GeminiOmniVideo
+
+    calls = _install_fake_requests(
+        monkeypatch,
+        post_responses=[
+            FakeResponse({"id": "int_9", "output_video": {"uri": "files/vid-9"}}),
+        ],
+        get_responses=[
+            FakeResponse({"state": "ACTIVE"}),
+            FakeResponse(content=b"draft mp4"),
+        ],
+    )
+    out = tmp_path / "draft.mp4"
+    result = GeminiOmniVideo().execute(
+        {"prompt": "a bridge", "resolution": "360p", "output_path": str(out)}
+    )
+    assert result.success, result.error
+    assert calls["post"][0]["json"]["response_format"]["resolution"] == "360p"
+    assert result.data["resolution"] == "360p"
+
+
+@pytest.mark.parametrize(
+    "resolution, expected",
+    [("360p", 0.24), ("720p", 0.80), ("1080p", 1.20), ("4k", 2.40)],
+)
+def test_cost_follows_resolution_tier(resolution, expected):
+    # A flat per-second rate quoted a 4k clip at a third of its real price.
+    from tools.video.gemini_omni_video import GeminiOmniVideo
+
+    cost = GeminiOmniVideo().estimate_cost({"duration": "8", "resolution": resolution})
+    assert cost == pytest.approx(expected)
+
+
+def test_unsupported_resolution_is_rejected(tmp_path, gemini_env):
+    from tools.video.gemini_omni_video import GeminiOmniVideo
+
+    result = GeminiOmniVideo().execute(
+        {"prompt": "x", "resolution": "8k", "output_path": str(tmp_path / "o.mp4")}
+    )
+    assert not result.success
+    assert "resolution" in result.error

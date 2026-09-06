@@ -1,7 +1,7 @@
 ---
 name: gemini-omni
 description: |
-  Generate and conversationally edit short videos with Google Gemini Omni Flash (`gemini-omni-flash-preview`). Use when: (1) iterating on a clip with natural-language edits instead of regenerating ("make the phone invisible, keep everything else the same"), (2) generating 3-10s 720p clips with synthesized audio, rendered on-screen text, or timecoded beats, (3) binding reference images to roles with <FIRST_FRAME>/<IMAGE_REF_N> prompt tags, (4) editing an existing uploaded video. Accessed via the `gemini_omni_video` tool using the project's GEMINI_API_KEY/GOOGLE_API_KEY — the same key as Imagen and Google TTS.
+  Generate and conversationally edit short videos with Google Gemini Omni Flash (`gemini-omni-1.1-flash`, default; `gemini-omni-flash-preview` still selectable). Use when: (1) iterating on a clip with natural-language edits instead of regenerating ("make the phone invisible, keep everything else the same"), (2) generating 3-10s 720p clips with synthesized audio, rendered on-screen text, or timecoded beats, (3) binding reference images to roles with <FIRST_FRAME>/<IMAGE_REF_N> prompt tags, (4) editing an existing uploaded video. Accessed via the `gemini_omni_video` tool using the project's GEMINI_API_KEY/GOOGLE_API_KEY — the same key as Imagen and Google TTS.
 allowed-tools: Bash, Read, Write
 metadata:
   openclaw:
@@ -84,8 +84,38 @@ holding <IMAGE_REF_1> [3-6s] Then we see the man <IMAGE_REF_2> holding <IMAGE_RE
 ```
 
 - `<FIRST_FRAME>` makes an image the opening frame: `<FIRST_FRAME> a woman is walking`.
+- `<LAST_FRAME>` pins the closing frame (1.1 only, and only valid alongside
+  `<FIRST_FRAME>`). Pass both images in the `input` list and describe the
+  transition — the model interpolates between them. This is the continuity
+  mechanism for multi-shot work: carry the tail frame of shot N into shot N+1.
 - Use high-resolution images; describe the intended motion specifically rather than "make it move."
 - Say what each image *is* (product / character / style / background reference) — the model decides usage from context.
+
+## Resolution and the draft tier (1.1)
+
+`resolution` rides in `response_format` and takes `360p`, `720p` (default),
+`1080p` or `4k`; the top two are upscaled. It sets the price as well as the
+size — roughly $0.03 / $0.10 / $0.15 / $0.30 per second of output. Published
+360p figures vary ($0.03-$0.043), so treat a draft quote as approximate.
+
+**Draft at 360p before committing.** It costs about a third of 720p and renders
+up to 60% faster, which makes it the right way to test a likeness, a camera
+move, or a prompt rewrite before paying for the real take.
+
+## Scene extension (1.1)
+
+1.1 reads up to 10 seconds of prior context when continuing a clip, against the
+single final frame earlier models used. Extensions run in 10-second increments
+to a cumulative 40 seconds, generating 3-10 seconds per call. Invoke it the same
+way as an edit — pass `previous_interaction_id` — and note the constraints:
+append only (no prepending, no mid-clip insertion), uploaded inputs must be 10
+seconds or shorter, and you cannot add new dialogue when extending an *uploaded*
+clip where someone speaks. Multi-turn extension of a clip the model generated
+itself does support spoken dialogue.
+
+This is the one capability with no equivalent on the fal route
+(`gemini_omni_fal`), which exposes no extend endpoint and accepts no interaction
+id as input.
 
 ## Conversational editing (the differentiator)
 

@@ -10,15 +10,21 @@ than the schema promised — a Decision-Communication / cost-accuracy violation.
 
 import pytest
 
+import tools.video.gemini_omni_video as gemini_omni_video
 import tools.video.higgsfield_video as higgsfield_video
 import tools.video.runway_video as runway_video
+from tools.video.gemini_omni_video import GeminiOmniVideo
 from tools.video.higgsfield_video import HiggsFieldVideo
 from tools.video.runway_video import RunwayVideo
 
 
 @pytest.mark.parametrize(
     "tool_cls, module",
-    [(RunwayVideo, runway_video), (HiggsFieldVideo, higgsfield_video)],
+    [
+        (RunwayVideo, runway_video),
+        (HiggsFieldVideo, higgsfield_video),
+        (GeminiOmniVideo, gemini_omni_video),
+    ],
 )
 def test_default_model_constant_matches_schema(tool_cls, module):
     # `execute()` reads `model` via `_DEFAULT_MODEL`; locking the constant to the

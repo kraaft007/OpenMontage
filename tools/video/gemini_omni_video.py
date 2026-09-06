@@ -37,10 +37,24 @@ from tools.base_tool import (
 
 _BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 _UPLOAD_URL = "https://generativelanguage.googleapis.com/upload/v1beta/files"
-_DEFAULT_MODEL = "gemini-omni-flash-preview"
-# Billed at 5,792 output tokens per second of 720p video, $17.50/1M tokens
-# (ai.google.dev/gemini-api/docs/pricing) — effectively ~$0.10 per second.
-_COST_PER_SECOND = 0.10
+# Model ids verified against ai.google.dev/gemini-api/docs/models/gemini-omni-flash
+# on 2026-09-05. 1.1 is the stable line; scene extension (10s of prior context,
+# cumulative 40s) and first/last-frame control exist only there.
+_DEFAULT_MODEL = "gemini-omni-1.1-flash"
+_MODELS = ["gemini-omni-1.1-flash", "gemini-omni-flash-preview"]
+# Billed per second of output, by resolution tier. 720p checks out against the
+# token math: 5,792 output tokens/sec at $17.50/1M = $0.1014/sec
+# (ai.google.dev/gemini-api/docs/pricing). Published 360p figures disagree
+# across sources ($0.03 vs $0.043); Google states "a third of 720p", so $0.03 is
+# the optimistic end — treat a 360p quote as approximate, not a guarantee.
+_COST_PER_SECOND_BY_RESOLUTION = {
+    "360p": 0.03,
+    "720p": 0.10,
+    "1080p": 0.15,
+    "4k": 0.30,
+}
+_DEFAULT_RESOLUTION = "720p"
+_COST_PER_SECOND = _COST_PER_SECOND_BY_RESOLUTION[_DEFAULT_RESOLUTION]
 _DEFAULT_DURATION_SECONDS = 8
 _POLL_INTERVAL_SECONDS = 5
 _MAX_POLL_SECONDS = 900
@@ -61,7 +75,8 @@ class GeminiOmniVideo(BaseTool):
     install_instructions = (
         "Set GEMINI_API_KEY or GOOGLE_API_KEY to a Google AI Studio API key.\n"
         "  Get one at https://aistudio.google.com/apikey\n"
-        "  Gemini Omni Flash is paid-tier only (no free tier); ~$0.10 per second of video."
+        "  Gemini Omni Flash is paid-tier only (no free tier). Priced per second of\n"
+        "  output by resolution: ~$0.03 (360p), $0.10 (720p), $0.15 (1080p), $0.30 (4k)."
     )
     agent_skills = ["gemini-omni", "ai-video-gen"]
 
@@ -75,33 +90,49 @@ class GeminiOmniVideo(BaseTool):
         "native_audio": True,
         "text_rendering": True,
         "timecode_control": True,
-        # Preview limitations — no sampler controls of any kind.
+        # No sampler controls of any kind on either model id.
         "seed": False,
         "negative_prompt": False,
-        "first_last_frame_to_video": False,
+        # True only since 1.1 + the resolution/last-frame plumbing below: two
+        # images in `input` bound with <FIRST_FRAME>/<LAST_FRAME> prompt tags.
+        # Selecting the -preview model id forfeits this.
+        "first_last_frame_to_video": True,
     }
     best_for = [
         "iterative natural-language video editing (edit a clip without regenerating it)",
-        "reference-image-driven clips via <FIRST_FRAME>/<IMAGE_REF_N> prompt tags",
-        "fast 3-10s clips with synced audio, rendered text, and timecoded beats from one Google key",
+        "multi-shot continuity: scene extension reads 10s of prior context, to 40s cumulative",
+        "first-and-last-frame control via <FIRST_FRAME>/<LAST_FRAME> prompt tags",
+        "reference-image-driven clips via <IMAGE_REF_N> prompt tags",
+        "cheap 360p drafts before committing to a 720p, 1080p or 4k take",
     ]
     not_good_for = [
-        "clips longer than 10 seconds or above 720p",
+        "single calls longer than 10 seconds (extend multi-turn instead)",
         "seed-reproducible output or negative-prompt control",
         "offline generation",
     ]
     fallback_tools = ["veo_video", "sora_video", "kling_video", "minimax_video"]
-    # Conversational editing + native audio are unique in the fleet, but preview
-    # output is capped at 720p/10s — below seedance (0.95) and grok/runway (0.9)
-    # on raw generation fidelity. Without a quality_score the scorer would only
-    # count supports/stability flags and bury the editing capability entirely.
-    # See lib/scoring.py.
+    # Conversational editing, scene extension and native audio are unique in the
+    # fleet. Without a quality_score the scorer would count only supports and
+    # stability flags and bury those entirely. See lib/scoring.py.
+    # Held at 0.85 deliberately: 1.1 lifted the old 720p ceiling to 4k, which
+    # arguably closes the gap to seedance (0.95) and grok/runway (0.9), but this
+    # value ranks the whole fleet and no ranking comparison has been run. Raise
+    # it only alongside that measurement.
     quality_score = 0.85
 
     input_schema = {
         "type": "object",
         "required": ["prompt"],
         "properties": {
+            "model": {
+                "type": "string",
+                "enum": _MODELS,
+                "default": _DEFAULT_MODEL,
+                "description": (
+                    "gemini-omni-1.1-flash adds scene extension, first/last-frame "
+                    "control and 4K; the -preview id is the older first model."
+                ),
+            },
             "prompt": {
                 "type": "string",
                 "description": (
@@ -119,6 +150,16 @@ class GeminiOmniVideo(BaseTool):
                 "type": "string",
                 "enum": ["16:9", "9:16"],
                 "default": "16:9",
+            },
+            "resolution": {
+                "type": "string",
+                "enum": ["360p", "720p", "1080p", "4k"],
+                "default": _DEFAULT_RESOLUTION,
+                "description": (
+                    "Drives both output size and price. 360p is the draft tier — "
+                    "roughly a third the cost and up to 60% faster; 1080p and 4k "
+                    "are upscaled. 1.1 models only."
+                ),
             },
             "duration": {
                 "type": "string",
@@ -198,7 +239,11 @@ class GeminiOmniVideo(BaseTool):
         return max(3, min(10, seconds))
 
     def estimate_cost(self, inputs: dict[str, Any]) -> float:
-        return _COST_PER_SECOND * self._duration_hint(inputs)
+        rate = _COST_PER_SECOND_BY_RESOLUTION.get(
+            str(inputs.get("resolution") or _DEFAULT_RESOLUTION).lower(),
+            _COST_PER_SECOND,
+        )
+        return rate * self._duration_hint(inputs)
 
     def estimate_runtime(self, inputs: dict[str, Any]) -> float:
         return 180.0
@@ -378,8 +423,12 @@ class GeminiOmniVideo(BaseTool):
         except Exception as e:
             return ToolResult(success=False, error=f"Gemini Omni input preparation failed: {e}")
 
+        model = inputs.get("model") or _DEFAULT_MODEL
+        resolution = str(inputs.get("resolution") or _DEFAULT_RESOLUTION).lower()
+        if resolution not in _COST_PER_SECOND_BY_RESOLUTION:
+            return ToolResult(success=False, error=f"unsupported resolution: {resolution}")
         payload: dict[str, Any] = {
-            "model": _DEFAULT_MODEL,
+            "model": model,
             # Plain string for text-only turns (the documented minimal form),
             # typed parts when images or an uploaded video ride along.
             "input": prompt if not parts else parts + [{"type": "text", "text": prompt}],
@@ -388,6 +437,7 @@ class GeminiOmniVideo(BaseTool):
             "response_format": {
                 "type": "video",
                 "aspect_ratio": aspect_ratio,
+                "resolution": resolution,
                 "delivery": "uri",
             },
         }
@@ -435,11 +485,12 @@ class GeminiOmniVideo(BaseTool):
             success=True,
             data={
                 "provider": self.provider,
-                "model": _DEFAULT_MODEL,
+                "model": model,
                 "prompt": prompt,
                 "operation": operation,
                 "output": str(output_path),
                 "aspect_ratio": aspect_ratio,
+                "resolution": resolution,
                 "has_audio": True,
                 # Feed this back as previous_interaction_id to edit this clip.
                 "interaction_id": interaction_id,
@@ -448,5 +499,5 @@ class GeminiOmniVideo(BaseTool):
             artifacts=[str(output_path)],
             cost_usd=self.estimate_cost(inputs),
             duration_seconds=round(time.time() - start, 2),
-            model=_DEFAULT_MODEL,
+            model=model,
         )
